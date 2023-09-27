@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using StoreApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,9 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = builder.Configuration.GetConnectionString("StoreApi");
+//conexion a db
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContextPool<ToDoAPIDbContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 

@@ -1,20 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StoreApi.Data;
-using StoreApi.DTO;
-using StoreApi.Model;
+using StoreApi.DTO.UserDTO;
+using StoreApi.Model.UserEntity;
 
-namespace StoreApi.Controllers
+namespace StoreApi.Controllers.UserController
 {
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
 
-        private readonly ToDoAPIDbContext dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
-        public UserController(ToDoAPIDbContext dbContext)
+        public UserController(ApplicationDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
+        }
+
+        [HttpGet(Name = "GetAllUsers")]
+        public async Task<ActionResult<List<User>>> Get()
+        {
+            return await _dbContext.User.ToListAsync();
         }
 
         [HttpPost(Name = "RegisterUser")]
@@ -27,10 +34,14 @@ namespace StoreApi.Controllers
             newUser.Password = user.UserPassword;
             newUser.Role = user.UserRole;
 
-            dbContext.Add(newUser);
-            await dbContext.SaveChangesAsync();
+            _dbContext.Add(newUser);
+            await _dbContext.SaveChangesAsync();
             return newUser;
-        }              
-                
+        }    
+      
+
+
+       
+
     }
 }
